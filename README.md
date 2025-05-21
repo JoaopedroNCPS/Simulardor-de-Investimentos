@@ -1,16 +1,15 @@
-# myapp
+Um Projeto para Simular teus Investimentos
 
-A new Flutter project.
+![Captura de tela 2025-05-21 142326](https://github.com/user-attachments/assets/5201157c-7c36-4875-9715-2c1938ace73a)
 
-## Getting Started
+![Captura de tela 2025-05-21 142334](https://github.com/user-attachments/assets/f65ff0d4-6a10-413c-a9a4-be9aa191adec)
 
-This project is a starting point for a Flutter application.
+Feito no: Firebase studio
+Usando Flutter
 
-A few resources to get you started if this is your first Flutter project:
+1. De fork
+2. Clique no botao direito dentro da pasta
+3. "Abrir Terminal"
+4. Code .
+5. E Execute
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
