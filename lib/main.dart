@@ -1,75 +1,50 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
-  runApp(const AvaliacaoIMCApp());
+  runApp(SimuladorInvestimentosApp());
 }
 
-class AvaliacaoIMCApp extends StatelessWidget {
-  const AvaliacaoIMCApp({super.key});
-
+class SimuladorInvestimentosApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Avaliador de IMC',
-      theme: ThemeData(primarySwatch: Colors.deepPurple),
-      home: const IMCCalculatorScreen(),
+      title: 'Simulador de Investimentos',
+      home: SimuladorInvestimentos(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class IMCCalculatorScreen extends StatefulWidget {
-  const IMCCalculatorScreen({super.key});
-
+class SimuladorInvestimentos extends StatefulWidget {
   @override
-  State<IMCCalculatorScreen> createState() => _IMCCalculatorScreenState();
+  _SimuladorInvestimentosState createState() => _SimuladorInvestimentosState();
 }
 
-class _IMCCalculatorScreenState extends State<IMCCalculatorScreen> {
-  final TextEditingController pesoController = TextEditingController();
-  final TextEditingController alturaController = TextEditingController();
+class _SimuladorInvestimentosState extends State<SimuladorInvestimentos> {
+  final TextEditingController _valorMensalController = TextEditingController();
+  final TextEditingController _mesesController = TextEditingController();
+  final TextEditingController _taxaJurosController = TextEditingController();
 
-  void calcularIMC() {
-    final double? peso = double.tryParse(pesoController.text);
-    final double? altura = double.tryParse(alturaController.text);
+  void _simularInvestimento() {
+    double valorMensal = double.tryParse(_valorMensalController.text) ?? 0;
+    int meses = int.tryParse(_mesesController.text) ?? 0;
+    double taxa = double.tryParse(_taxaJurosController.text.replaceAll('%', '')) ?? 0;
 
-    if (peso == null || altura == null || altura == 0) {
-      showDialog(
-        context: context,
-        builder: (ctx) => const AlertDialog(
-          title: Text('Erro'),
-          content: Text('Por favor, preencha corretamente os campos.'),
-        ),
-      );
-      return;
-    }
-
-    final double imc = peso / (altura * altura);
-    String classificacao;
-
-    if (imc < 18.5) {
-      classificacao = 'Abaixo do peso';
-    } else if (imc < 24.9) {
-      classificacao = 'Peso normal';
-    } else if (imc < 29.9) {
-      classificacao = 'Sobrepeso';
-    } else if (imc < 34.9) {
-      classificacao = 'Obesidade grau 1';
-    } else if (imc < 39.9) {
-      classificacao = 'Obesidade grau 2';
-    } else {
-      classificacao = 'Obesidade grau 3';
-    }
+    double taxaDecimal = taxa / 100;
+    double valorSemJuros = valorMensal * meses;
+    double valorComJuros = valorMensal * ((pow(1 + taxaDecimal, meses) - 1) / taxaDecimal);
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Resultado do IMC'),
-        content: Text('IMC: ${imc.toStringAsFixed(2)}\nClassificação: $classificacao'),
+      builder: (context) => AlertDialog(
+        title: Text('Resultado'),
+        content: Text('Valor total com juros compostos: R\$ ${valorComJuros.toStringAsFixed(2)}'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('OK'),
-          ),
+            child: Text('OK'),
+            onPressed: () => Navigator.of(context).pop(),
+          )
         ],
       ),
     );
@@ -78,28 +53,55 @@ class _IMCCalculatorScreenState extends State<IMCCalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Calculadora de IMC')),
+      backgroundColor: Color(0xFFEAF4EC),
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 41, 160, 73),
+        title: Text('Simulador de Investimentos'),
+        centerTitle: true,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
           children: [
-            const Text('Peso (kg):', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 12),
+            Text('Investimento mensal:'),
             TextField(
-              controller: pesoController,
+              controller: _valorMensalController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(hintText: 'Ex: 70'),
+              decoration: InputDecoration(
+                hintText: 'Digite o valor',
+                border: OutlineInputBorder(),
+              ),
             ),
-            const SizedBox(height: 20),
-            const Text('Altura (m):', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 16),
+            Text('Número de meses:'),
             TextField(
-              controller: alturaController,
+              controller: _mesesController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(hintText: 'Ex: 1.75'),
+              decoration: InputDecoration(
+                hintText: 'Quantos meses deseja investir',
+                border: OutlineInputBorder(),
+              ),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: 16),
+            Text('Taxa de juros ao mês:'),
+            TextField(
+              controller: _taxaJurosController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: 'Digite a taxa de juros',
+                suffixText: '%',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 24),
             ElevatedButton(
-              onPressed: calcularIMC,
-              child: const Text('Calcular'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 170, 71, 38),
+                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              ),
+              onPressed: _simularInvestimento,
+              child: Text('Simular'),
             ),
           ],
         ),
